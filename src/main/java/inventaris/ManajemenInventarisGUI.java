@@ -32,7 +32,8 @@ public class ManajemenInventarisGUI extends JFrame {
 
     // ============ CONSTANTS & STYLING ============
     private final String[] namaKolom = {"Kode Barang", "Nama Barang", "Jumlah (Stok)", "Harga (Rp)"};
-    private final NumberFormat kursIndonesia = NumberFormat.getCurrencyInstance(Locale.of("id", "ID"));
+    @SuppressWarnings("deprecation")
+    private final NumberFormat kursIndonesia = NumberFormat.getCurrencyInstance(new Locale("id","ID"));
     
     // Dark Mode Colors
     private static final Color BG_BASE = Color.decode("#121212");       
