@@ -1,14 +1,10 @@
-# Aplikasi Manajemen Inventaris Pro (Java Swing + SQL Server)
-
-![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
-![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
-![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
+# Aplikasi Manajemen Inventaris (Java Swing + SQL Server)
 
 Aplikasi desktop untuk pengelolaan stok barang gudang yang dirancang dengan antarmuka modern (Dark Mode), aman, dan efisien. Proyek ini dibangun untuk memenuhi **Tugas Akhir Mata Kuliah Pemrograman Berorientasi Objek (PBO)** Semester 3.
 
 ---
 
-## 🚀 Fitur Unggulan
+## Fitur Unggulan
 
 1.  **CRUD Lengkap:** Tambah, Baca, Edit, dan Hapus data barang dengan mudah.
 2.  **Modern Dark UI:** Desain antarmuka gelap yang nyaman di mata dan terlihat profesional.
@@ -21,7 +17,7 @@ Aplikasi desktop untuk pengelolaan stok barang gudang yang dirancang dengan anta
 
 ---
 
-## 🛠️ Teknologi yang Digunakan
+## Teknologi yang Digunakan
 
 * **Bahasa:** Java (JDK 23, dikompilasi dengan kompatibilitas JDK 11).
 * **GUI Library:** Java Swing (JFrame, JPanel, GridBagLayout, Custom Renderer).
@@ -31,7 +27,7 @@ Aplikasi desktop untuk pengelolaan stok barang gudang yang dirancang dengan anta
 
 ---
 
-## ⚙️ Persyaratan Sistem (Prerequisites)
+## Persyaratan Sistem (Prerequisites)
 
 Sebelum menjalankan aplikasi, pastikan komputer Anda memiliki:
 1.  **Java Runtime Environment (JRE)** minimal versi 11.
@@ -40,7 +36,7 @@ Sebelum menjalankan aplikasi, pastikan komputer Anda memiliki:
 
 ---
 
-## 📥 Cara Instalasi & Menjalankan
+## Cara Instalasi & Menjalankan
 
 ### Langkah 1: Persiapan Database
 1.  Buka **SSMS (SQL Server Management Studio)**.
