@@ -1,4 +1,4 @@
-package inventaris;
+package ManajemenInventaris;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,24 +9,26 @@ import java.sql.Statement;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 
+/**
+ * Utility class to provide database connections and ensure the inventory table exists.
+ * - Loads DB credentials from an external `db.properties` file.
+ * - Provides `getKoneksi()` to obtain a JDBC Connection (or null with an error dialog on failure).
+ * - Provides `buatTabelJikaBelumAda()` to create the `inventaris` table if it does not yet exist.
+ */
 public class KoneksiDatabase {
-    // Utility class to provide database connections and ensure the inventory table exists.
-    // - Loads DB credentials from an external `db.properties` file.
-    // - Provides `getKoneksi()` to obtain a JDBC Connection (or null with an error dialog on failure).
-    // - Provides `buatTabelJikaBelumAda()` to create the `inventaris` table if it does not yet exist.
     
     private static Properties config = new Properties();
 
+    /**
+     * Attempt to read DB config and return a JDBC Connection.
+     * @return Connection object or null if connection fails
+     */
     public static Connection getKoneksi() {
-        // Attempt to read DB config and return a JDBC Connection.
         try {
-            // 1. Load Config dari file eksternal
             config.load(new FileInputStream("db.properties"));
             
-            // 2. Load Driver
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             
-            // 3. Ambil kredensial dari properties
             return DriverManager.getConnection(
                 config.getProperty("db.url"),
                 config.getProperty("db.user"),
@@ -43,8 +45,10 @@ public class KoneksiDatabase {
             return null;
         }
     }
-
-    // Create `inventaris` table if it doesn't already exist (SQL Server T-SQL IF NOT EXISTS check).
+    /**
+     * Create `inventaris` table if it doesn't already exist.
+     * Uses SQL Server T-SQL IF NOT EXISTS check.
+     */
     public static void buatTabelJikaBelumAda() {
         String sqlInventaris = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='inventaris' AND xtype='U') "
                    + "BEGIN "

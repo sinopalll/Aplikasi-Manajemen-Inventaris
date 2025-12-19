@@ -1,4 +1,4 @@
-package inventaris;
+package ManajemenInventaris;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -13,15 +13,19 @@ import java.util.Locale;
 /**
  * Aplikasi Manajemen Inventaris
  */
-public class ManajemenInventarisGUI extends JFrame {
-    
-    // Main GUI class for the inventory application.
-    // Contains Swing components, layout, event handlers and helper methods.
+public class ManajemenInventarisGUI extends JPanel {
 
-    // Notes:
-    // - UI components created here are reused across methods (form fields, buttons, table).
-    // - Styling constants are defined below for easy theme adjustments.
-    // - Database calls are performed in-place; consider moving to background thread for large datasets.
+    private MainApp mainApp;
+    private String currentUser;
+    
+    /**
+     * Main GUI class for the inventory application.
+     * Contains Swing components, layout, event handlers and helper methods.
+     * 
+     * UI components created here are reused across methods (form fields, buttons, table).
+     * Styling constants are defined for easy theme adjustments.
+     * Database calls are performed in-place; consider moving to background thread for large datasets.
+     */
 
     // ============ UI COMPONENTS ============
     private JTable tabelInventaris;
@@ -35,7 +39,7 @@ public class ManajemenInventarisGUI extends JFrame {
     @SuppressWarnings("deprecation")
     private final NumberFormat kursIndonesia = NumberFormat.getCurrencyInstance(new Locale("id","ID"));
     
-    // Dark Mode Colors
+    /** Dark Mode Colors */
     private static final Color BG_BASE = Color.decode("#121212");       
     private static final Color BG_PANEL = Color.decode("#1E1E1E");      
     private static final Color TEXT_PRIMARY = Color.decode("#FFFFFF");  
@@ -46,30 +50,30 @@ public class ManajemenInventarisGUI extends JFrame {
     private static final Color INPUT_BORDER = Color.decode("#2C2C2C");
     private static final Color INPUT_TEXT = Color.decode("#FFFFFF");
 
-    // Fonts
-    private static final Font HEADER_FONT = new Font("Segoe UI", Font.BOLD, 22);
+    /** Fonts */
+    private static final Font HEADER_FONT = new Font("Segoe UI", Font.BOLD, 20);
     private static final Font LABEL_FONT = new Font("Segoe UI", Font.BOLD, 13);
     private static final Font INPUT_FONT = new Font("Segoe UI", Font.PLAIN, 14);
 
-    public ManajemenInventarisGUI() {
-        setTitle("Aplikasi Manajemen Inventaris");
-        setSize(1100, 780);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        getContentPane().setBackground(BG_BASE);
+    /**
+     * Creates a ManajemenInventarisGUI panel.
+     * @param app reference to the main application
+     * @param username the username of the logged-in user
+     */
+    public ManajemenInventarisGUI(MainApp app, String username) {
+        this.mainApp = app;
+        this.currentUser = username;
+
+        this.setBackground(BG_BASE); 
         
-        try {
-            ImageIcon icon = new ImageIcon("image/logo.png");
-            setIconImage(icon.getImage());
-        } catch (Exception ignored) {}
-        
-        // Pastikan tabel database tersedia, lalu inisialisasi UI dan muat data awal
         KoneksiDatabase.buatTabelJikaBelumAda();
         initComponents();
         loadData();
     }
 
-    // Initialize and layout all UI components (header, dashboard, main content, footer)
+    /**
+     * Initialize and layout all UI components (header, dashboard, main content, footer).
+     */
     private void initComponents() {
         setLayout(new BorderLayout(0, 0));
 
@@ -83,33 +87,38 @@ public class ManajemenInventarisGUI extends JFrame {
         // Main Content
         add(createMainContentPanel(), BorderLayout.CENTER);
 
-        // Footer
-        add(createFooterPanel(), BorderLayout.SOUTH);
-
         setupEventListeners();
     }
 
-    // Create top header with optional logo and application title
+    /**
+     * Create top header with logo and application title.
+     * @return the header panel
+     */
     private JPanel createHeaderPanel() {
-        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        JPanel headerPanel = new JPanel(new BorderLayout(0, 10));
         headerPanel.setBackground(BG_PANEL);
-        headerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, BORDER_SOFT));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        File fileGambar = new File("image/logo.png");
-        if (fileGambar.exists()) {
-            ImageIcon originalIcon = new ImageIcon("image/logo.png");
-            Image scaledImage = originalIcon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-            headerPanel.add(new JLabel(new ImageIcon(scaledImage)));
-        }
-
-        JLabel lblJudul = new JLabel(" Aplikasi Manajemen Inventaris");
+        JLabel lblJudul = new JLabel("User: " + currentUser);
         lblJudul.setFont(HEADER_FONT);
         lblJudul.setForeground(TEXT_PRIMARY);
-        headerPanel.add(lblJudul);
+        headerPanel.add(lblJudul, BorderLayout.WEST);
+        
+        tombolExit = createStyledButton("Logout", new Color[]{Color.decode("#D32F2F"), Color.decode("#E57373"), Color.decode("#B71C1C")});
+        tombolExit.setPreferredSize(new Dimension(80, 35));
+        
+        JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        logoutPanel.setBackground(BG_PANEL);
+        logoutPanel.add(tombolExit);
+        headerPanel.add(logoutPanel, BorderLayout.EAST);
+        
         return headerPanel;
     }
 
-    // Create dashboard panel with summary cards
+    /**
+     * Create dashboard panel with summary cards.
+     * @return the dashboard panel
+     */
     private JPanel createDashboardPanel() {
         JPanel dashboardPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         dashboardPanel.setBackground(BG_BASE);
@@ -123,7 +132,13 @@ public class ManajemenInventarisGUI extends JFrame {
         return dashboardPanel;
     }
 
-    // Helper: construct a small dashboard card with an accent bar
+    /**
+     * Construct a small dashboard card with an accent bar.
+     * @param title the card title
+     * @param valueLabel the value label
+     * @param accentColor the accent color
+     * @return the card panel
+     */
     private JPanel createCard(String title, JLabel valueLabel, Color accentColor) {
         JPanel card = new JPanel(new BorderLayout(5, 5));
         card.setBackground(BG_PANEL);
@@ -145,7 +160,10 @@ public class ManajemenInventarisGUI extends JFrame {
         return card;
     }
 
-    // Compose main content: form (north) and table (center)
+    /**
+     * Compose main content: form (north) and table (center).
+     * @return the main content panel
+     */
     private JPanel createMainContentPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout(20, 20));
         mainPanel.setBackground(BG_BASE);
@@ -157,7 +175,10 @@ public class ManajemenInventarisGUI extends JFrame {
         return mainPanel;
     }
 
-    // Build the input form (Kode, Nama, Jumlah, Harga)
+    /**
+     * Build the input form (Kode, Nama, Jumlah, Harga).
+     * @return the form panel
+     */
     private JPanel createFormPanel() {
         JPanel topContainer = new JPanel(new GridBagLayout());
         topContainer.setBackground(BG_PANEL);
@@ -197,7 +218,10 @@ public class ManajemenInventarisGUI extends JFrame {
         return topContainer;
     }
 
-    // Create action buttons and set preferred sizes
+    /**
+     * Create action buttons and set preferred sizes.
+     * @return the button panel
+     */
     private JPanel createButtonPanel() {
         JPanel formButtonPanel = new JPanel(new GridLayout(2, 1, 0, 5));
         formButtonPanel.setBackground(BG_PANEL);
@@ -229,7 +253,10 @@ public class ManajemenInventarisGUI extends JFrame {
         return formButtonPanel;
     }
 
-    // Create searchable table panel and export controls (no pagination)
+    /**
+     * Create searchable table panel and export controls (no pagination).
+     * @return the table panel
+     */
     private JPanel createTablePanel() {
         JPanel tablePanel = new JPanel(new BorderLayout(0, 10));
         tablePanel.setBackground(BG_BASE);
@@ -283,20 +310,11 @@ public class ManajemenInventarisGUI extends JFrame {
         return tablePanel;
     }
 
-    // Footer area containing the exit button
-    private JPanel createFooterPanel() {
-        JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        footerPanel.setBackground(BG_BASE);
-        
-        tombolExit = createStyledButton("Keluar", new Color[]{Color.decode("#424242"), Color.decode("#4E4E4E"), Color.decode("#303030")});
-        tombolExit.setPreferredSize(new Dimension(100, 35));
-        footerPanel.add(tombolExit);
-        return footerPanel;
-    }
-
     // ============ LOGIC & EVENTS ============
 
-    // Attach action handlers for buttons, search field, and table selection
+    /**
+     * Attach action handlers for buttons, search field, and table selection.
+     */
     private void setupEventListeners() {
         tombolTambah.addActionListener(e -> aksiTambah());
         tombolEdit.addActionListener(e -> aksiEdit());
@@ -305,9 +323,9 @@ public class ManajemenInventarisGUI extends JFrame {
         tombolClear.addActionListener(e -> clearFormulir());
         
         tombolExit.addActionListener(e -> {
-            if (JOptionPane.showConfirmDialog(this, "Keluar dari aplikasi?", "Konfirmasi", 
+            if (JOptionPane.showConfirmDialog(this, "Logout dari akun?", "Konfirmasi", 
                 JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                System.exit(0);
+                    mainApp.showLoginView();
             }
         });
 
@@ -325,19 +343,32 @@ public class ManajemenInventarisGUI extends JFrame {
         });
     }
 
-    // --- CORE DATA LOADING ---
-    // Load (filtered) data from the database into the table model.
-    // Note: synchronous DB call; consider moving to a SwingWorker for heavy datasets.
+    /**
+     * Load (filtered) data from the database into the table model.
+     * Note: synchronous DB call; consider moving to a SwingWorker for heavy datasets.
+     */
     private void loadData() {
-        String keyword = fieldCari.getText();
+        String keyword = fieldCari.getText().trim(); // Tambahkan .trim() untuk hapus spasi
         modelTabel.setRowCount(0);
 
-        String sqlData = "SELECT * FROM inventaris WHERE nama LIKE ? OR kode LIKE ? ORDER BY kode";
+        /** Default query: Ambil semua data milik user ini */
+        String sqlData = "SELECT * FROM inventaris WHERE pemilik = ? ORDER BY kode";
+
+        /** Jika ada pencarian, ganti querynya */
+        if (!keyword.isEmpty()) {
+            sqlData = "SELECT * FROM inventaris WHERE pemilik = ? AND (nama LIKE ? OR kode LIKE ?) ORDER BY kode";
+        }
+
         try (Connection conn = KoneksiDatabase.getKoneksi();
              PreparedStatement pstmt = conn.prepareStatement(sqlData)) {
 
-            pstmt.setString(1, "%" + keyword + "%");
-            pstmt.setString(2, "%" + keyword + "%");
+            pstmt.setString(1, currentUser); // Parameter 1 selalu pemilik
+
+            /** Jika sedang mencari, set parameter tambahan */
+            if (!keyword.isEmpty()) {
+                pstmt.setString(2, "%" + keyword + "%");
+                pstmt.setString(3, "%" + keyword + "%");
+            }
 
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -349,20 +380,27 @@ public class ManajemenInventarisGUI extends JFrame {
                 });
             }
 
+            /** Update statistik juga biar sinkron */
             calculateGlobalStats();
 
         } catch (Exception e) {
+            e.printStackTrace(); // Biar kelihatan errornya di terminal
             JOptionPane.showMessageDialog(this, "Gagal memuat data: " + e.getMessage());
         }
     }
 
-    // Calculate and update dashboard statistics: total items and total assets
+    /**
+     * Calculate and update dashboard statistics: total items and total assets.
+     */
     private void calculateGlobalStats() {
-        String sql = "SELECT COUNT(*), SUM(jumlah * harga) FROM inventaris";
+        /** UBAH QUERY: Tambahkan WHERE pemilik = ? */
+        String sql = "SELECT COUNT(*), SUM(jumlah * harga) FROM inventaris WHERE pemilik = ?";
         try (Connection conn = KoneksiDatabase.getKoneksi();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) { /** Ganti Statement jadi PreparedStatement */
             
+            pstmt.setString(1, currentUser); /** Filter User */
+            
+            ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 labelTotalItem.setText(rs.getInt(1) + " Item");
                 double aset = rs.getDouble(2);
@@ -371,16 +409,21 @@ public class ManajemenInventarisGUI extends JFrame {
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    // Handle insert (Simpan) action: validate, insert into DB, refresh table
+    /**
+     * Handle insert (Simpan) action: validate, insert into DB, refresh table.
+     */
     private void aksiTambah() {
         if (!validasiInput()) return;
-        String sql = "INSERT INTO inventaris (kode, nama, jumlah, harga) VALUES (?, ?, ?, ?)";
+        /** UBAH QUERY: Tambah kolom pemilik */
+        String sql = "INSERT INTO inventaris (kode, nama, jumlah, harga, pemilik) VALUES (?, ?, ?, ?, ?)";
+        
         try (Connection conn = KoneksiDatabase.getKoneksi();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, fieldKode.getText());
             pstmt.setString(2, fieldNama.getText());
             pstmt.setInt(3, Integer.parseInt(fieldJumlah.getText()));
-            pstmt.setDouble(4, getDoubleFromHargaField()); // Parse manual
+            pstmt.setDouble(4, getDoubleFromHargaField());
+            pstmt.setString(5, currentUser); /** Masukkan username yang login */
             pstmt.executeUpdate();
             
             JOptionPane.showMessageDialog(this, "Berhasil disimpan!");
@@ -389,7 +432,9 @@ public class ManajemenInventarisGUI extends JFrame {
         } catch (SQLException e) { handleSQLError(e); }
     }
 
-    // Handle edit (Update) action for the selected row
+    /**
+     * Handle edit (Update) action for the selected row.
+     */
     private void aksiEdit() {
         if (tabelInventaris.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(this, "Pilih baris dulu!"); return;
@@ -397,7 +442,8 @@ public class ManajemenInventarisGUI extends JFrame {
         if (!validasiInput()) return;
         
         String kode = fieldKode.getText();
-        String sql = "UPDATE inventaris SET nama=?, jumlah=?, harga=? WHERE kode=?";
+        String sql = "UPDATE inventaris SET nama=?, jumlah=?, harga=? WHERE kode=? AND pemilik=?";
+
         try (Connection conn = KoneksiDatabase.getKoneksi();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
@@ -405,6 +451,7 @@ public class ManajemenInventarisGUI extends JFrame {
             pstmt.setInt(2, Integer.parseInt(fieldJumlah.getText()));
             pstmt.setDouble(3, getDoubleFromHargaField());
             pstmt.setString(4, kode);
+            pstmt.setString(5, currentUser); 
             pstmt.executeUpdate();
             
             JOptionPane.showMessageDialog(this, "Data berhasil diperbarui!");
@@ -413,7 +460,9 @@ public class ManajemenInventarisGUI extends JFrame {
         } catch (SQLException e) { handleSQLError(e); }
     }
 
-    // Handle delete (Hapus) action with confirmation dialog
+    /**
+     * Handle delete (Hapus) action with confirmation dialog.
+     */
     private void aksiHapus() {
         int rowView = tabelInventaris.getSelectedRow();
         if (rowView == -1) { JOptionPane.showMessageDialog(this, "Pilih baris terlebih dahulu!"); return; }
@@ -429,8 +478,9 @@ public class ManajemenInventarisGUI extends JFrame {
             
         if (konfirmasi == JOptionPane.YES_OPTION) {
             try (Connection conn = KoneksiDatabase.getKoneksi();
-                 PreparedStatement pstmt = conn.prepareStatement("DELETE FROM inventaris WHERE kode=?")) {
+                PreparedStatement pstmt = conn.prepareStatement("DELETE FROM inventaris WHERE kode=? AND pemilik=?")) {
                 pstmt.setString(1, kode);
+                pstmt.setString(2, currentUser);
                 pstmt.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Data berhasil dihapus!");
                 loadData(); 
@@ -439,15 +489,20 @@ public class ManajemenInventarisGUI extends JFrame {
         }
     }
 
-    // --- HELPERS & MASKING ---
-    // Parse numeric value from the formatted price field (remove 'Rp' and separators)
+    /**
+     * Parse numeric value from the formatted price field (remove 'Rp' and separators).
+     * @return the numeric value
+     */
     private double getDoubleFromHargaField() {
-        String text = fieldHarga.getText().replaceAll("[^0-9]", ""); // Hapus 'Rp', titik, koma
+        String text = fieldHarga.getText().replaceAll("[^0-9]", ""); /** Hapus 'Rp', titik, koma */
         if (text.isEmpty()) return 0;
         return Double.parseDouble(text);
     }
 
-    // Apply currency mask: show raw digits while editing, format as Rupiah when focus lost
+    /**
+     * Apply currency mask: show raw digits while editing, format as Rupiah when focus lost.
+     * @param field the field to apply masking to
+     */
     private void setCurrencyMask(JTextField field) {
         field.addFocusListener(new FocusAdapter() {
             @Override
@@ -468,7 +523,9 @@ public class ManajemenInventarisGUI extends JFrame {
         });
     }
 
-    // Populate form fields from the selected table row and switch UI to edit mode
+    /**
+     * Populate form fields from the selected table row and switch UI to edit mode.
+     */
     private void isiFormulirDariTabel() {
         int rowView = tabelInventaris.getSelectedRow();
         if (rowView != -1) {
@@ -488,7 +545,9 @@ public class ManajemenInventarisGUI extends JFrame {
         }
     }
 
-    // Clear all form fields and reset button states
+    /**
+     * Clear all form fields and reset button states.
+     */
     private void clearFormulir() {
         fieldKode.setText(""); fieldNama.setText(""); fieldJumlah.setText(""); fieldHarga.setText(""); fieldCari.setText("");
         tabelInventaris.clearSelection();
@@ -498,7 +557,14 @@ public class ManajemenInventarisGUI extends JFrame {
         tombolEdit.setEnabled(true);
     }
     
-    // Helper to add a labeled form row to the GridBagLayout-based form
+    /**
+     * Helper to add a labeled form row to the GridBagLayout-based form.
+     * @param panel the panel to add to
+     * @param gbc the GridBagConstraints
+     * @param row the row index
+     * @param labelText the label text
+     * @param field the form field component
+     */
     private void addFormRowCustom(JPanel panel, GridBagConstraints gbc, int row, String labelText, Component field) {
         JLabel label = new JLabel(labelText);
         label.setFont(LABEL_FONT);
@@ -512,7 +578,11 @@ public class ManajemenInventarisGUI extends JFrame {
         panel.add(field, gbc);
     }
 
-    // Create a styled JTextField used throughout the form (consistent height, colors, focus border)
+    /**
+     * Create a styled JTextField used throughout the form.
+     * Provides consistent height, colors, and focus border styling.
+     * @return the styled text field
+     */
     private JTextField createStyledTextField() {
         JTextField field = new JTextField();
         field.setFont(INPUT_FONT);
@@ -535,7 +605,12 @@ public class ManajemenInventarisGUI extends JFrame {
         return field;
     }
 
-    // Create a styled JButton with simple hover and pressed color states
+    /**
+     * Create a styled JButton with simple hover and pressed color states.
+     * @param text the button text
+     * @param colors array of colors [base, hover, pressed]
+     * @return the styled button
+     */
     private JButton createStyledButton(String text, Color[] colors) {
         JButton btn = new JButton(text);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -553,7 +628,10 @@ public class ManajemenInventarisGUI extends JFrame {
         return btn;
     }
     
-    // Enforce digit-only input for numeric fields (jumlah, harga while editing)
+    /**
+     * Enforce digit-only input for numeric fields (jumlah, harga while editing).
+     * @param textField the field to apply the filter to
+     */
     private void setNumericFilter(JTextField textField) {
         textField.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
@@ -564,7 +642,10 @@ public class ManajemenInventarisGUI extends JFrame {
         });
     }
     
-    // Validate required inputs and numeric parsing before DB operations
+    /**
+     * Validate required inputs and numeric parsing before DB operations.
+     * @return true if validation passes, false otherwise
+     */
     private boolean validasiInput() {
         if (fieldKode.getText().isEmpty() || fieldNama.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Kode dan Nama wajib diisi!", "Validasi", JOptionPane.WARNING_MESSAGE);
@@ -580,13 +661,18 @@ public class ManajemenInventarisGUI extends JFrame {
         return true;
     }
     
-    // Display friendly messages for common SQL errors (e.g., duplicate primary key)
+    /**
+     * Display friendly messages for common SQL errors (e.g., duplicate primary key).
+     * @param e the SQLException
+     */
     private void handleSQLError(SQLException e) {
         if (e.getErrorCode() == 2627 || e.getErrorCode() == 2601) JOptionPane.showMessageDialog(this, "Kode Barang sudah ada!");
         else JOptionPane.showMessageDialog(this, "Error Database: " + e.getMessage());
     }
     
-    // Export current table data to CSV file chosen by the user
+    /**
+     * Export current table data to CSV file chosen by the user.
+     */
     private void aksiExport() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Simpan Laporan ke CSV");
@@ -612,7 +698,9 @@ public class ManajemenInventarisGUI extends JFrame {
         }
     }
     
-    // Configure table appearance: header renderer with sort marker, striped rows and currency display
+    /**
+     * Configure table appearance: header renderer with sort marker, striped rows and currency display.
+     */
     private void setupTableStyle() {
         tabelInventaris.setRowHeight(35);
         tabelInventaris.setShowVerticalLines(false);
@@ -677,10 +765,5 @@ public class ManajemenInventarisGUI extends JFrame {
         for (int i = 0; i < tabelInventaris.getColumnCount(); i++) {
             tabelInventaris.getColumnModel().getColumn(i).setCellRenderer(stripeRenderer);
         }
-    }
-
-    // Application entry point: launch the GUI on Swing's Event Dispatch Thread
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new ManajemenInventarisGUI().setVisible(true));
     }
 }
