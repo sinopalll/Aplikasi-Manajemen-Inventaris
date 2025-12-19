@@ -3,27 +3,36 @@ package ManajemenInventaris;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Panel transisi yang menampilkan animasi loading dan progress bar.
+ * Digunakan saat aplikasi melakukan proses asinkron (background task).
+ */
 public class LoadingPanel extends JPanel {
 
+    /** Komponen progress bar untuk visualisasi persentase */
     private JProgressBar progressBar;
+    
+    /** Label untuk menampilkan teks status loading */
     private JLabel lblText;
 
+    /**
+     * Inisialisasi komponen UI LoadingPanel.
+     * Mengatur layout, warna background, dan properti progress bar.
+     */
     public LoadingPanel() {
         setLayout(new GridBagLayout());
-        setBackground(Color.decode("#121212"));
+        setBackground(Color.decode("#121212")); 
 
         JPanel content = new JPanel(new BorderLayout(0, 20));
         content.setOpaque(false);
 
-        // Setup Progress Bar
-        progressBar = new JProgressBar(0, 100); // Range 0 - 100
+        progressBar = new JProgressBar(0, 100);
         progressBar.setValue(0);
-        progressBar.setStringPainted(true); // Tampilkan teks persen (misal "50%")
-        progressBar.setPreferredSize(new Dimension(300, 25)); // Sedikit lebih tebal
+        progressBar.setStringPainted(true);
+        progressBar.setPreferredSize(new Dimension(300, 25));
         
-        // Styling Progress Bar
-        progressBar.setForeground(Color.decode("#3D5AFE")); // Warna bar biru
-        progressBar.setBackground(Color.decode("#1E1E1E")); // Warna background bar
+        progressBar.setForeground(Color.decode("#3D5AFE")); 
+        progressBar.setBackground(Color.decode("#1E1E1E"));
         progressBar.setBorderPainted(false);
         progressBar.setFont(new Font("Segoe UI", Font.BOLD, 12));
 
@@ -38,7 +47,8 @@ public class LoadingPanel extends JPanel {
     }
 
     /**
-     * Update nilai progress bar (0-100)
+     * Mengupdate nilai progress bar dan teks status secara dinamis.
+     * @param value Nilai progress (0-100).
      */
     public void setProgress(int value) {
         progressBar.setValue(value);

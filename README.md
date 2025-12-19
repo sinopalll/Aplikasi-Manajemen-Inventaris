@@ -1,55 +1,57 @@
-# Aplikasi Manajemen Inventaris (Java Swing + SQL Server)
+# 📦 Aplikasi Manajemen Inventaris (Inventory Pro)
 
-Aplikasi desktop untuk pengelolaan stok barang gudang yang dirancang dengan antarmuka modern (Dark Mode), aman, dan efisien. Proyek ini dibangun untuk memenuhi **Tugas Akhir Mata Kuliah Pemrograman Berorientasi Objek (PBO)** Semester 3.
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
+![Azure](https://img.shields.io/badge/Azure-0078D4?style=for-the-badge&logo=microsoft-azure&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
 
----
+> **Proyek Tugas Akhir Mandiri Praktikum Pemrograman Berorientasi Objek (PPBO)**
 
-## Fitur Unggulan
-
-1.  **CRUD Lengkap:** Tambah, Baca, Edit, dan Hapus data barang dengan mudah.
-2.  **Modern Dark UI:** Desain antarmuka gelap yang nyaman di mata dan terlihat profesional.
-3.  **Smart Pagination:** Menampilkan data per halaman (15 baris) untuk performa aplikasi yang ringan, meskipun data mencapai ribuan.
-4.  **Real-time Search:** Pencarian barang berdasarkan Nama atau Kode secara instan tanpa perlu reload.
-5.  **Smart Input Masking:** Kolom harga otomatis memformat angka menjadi format mata uang Rupiah (Rp) saat tidak diedit.
-6.  **Validasi Ketat:** Mencegah input huruf pada kolom angka dan mencegah duplikasi Kode Barang (Primary Key).
-7.  **Export to CSV:** Fitur pelaporan untuk mengunduh data stok ke dalam format Excel/CSV.
-8.  **Database Terintegrasi:** Menggunakan SQL Server untuk penyimpanan data yang persisten dan aman.
+Aplikasi desktop berbasis **Java Swing** untuk pengelolaan stok barang dengan sistem **Multi-User** yang terintegrasi dengan **Microsoft SQL Server (Azure Cloud)**. Aplikasi ini dirancang dengan arsitektur *Single Window*, menerapkan konsep **Asynchronous Loading** untuk performa tinggi, dan antarmuka *Dark Mode* yang modern.
 
 ---
 
-## Teknologi yang Digunakan
+## ✨ Fitur Unggulan
 
-* **Bahasa:** Java (JDK 23, dikompilasi dengan kompatibilitas JDK 11).
-* **GUI Library:** Java Swing (JFrame, JPanel, GridBagLayout, Custom Renderer).
-* **Database:** Microsoft SQL Server 2022.
-* **Driver JDBC:** `mssql-jdbc-13.2.1.jre11.jar`.
-* **Tools:** Visual Studio Code, SQL Server Management Studio (SSMS).
-
----
-
-## Persyaratan Sistem (Prerequisites)
-
-Sebelum menjalankan aplikasi, pastikan komputer Anda memiliki:
-1.  **Java Runtime Environment (JRE)** minimal versi 11.
-2.  **SQL Server** (Developer/Express Edition).
-3.  **SQL Server Management Studio (SSMS)** untuk import database.
+| Fitur | Deskripsi |
+| :--- | :--- |
+| ☁️ **Cloud Database** | Terintegrasi langsung dengan Azure SQL Database (Real-time). |
+| 👥 **Multi-User System** | Isolasi data pengguna (User A tidak bisa melihat data User B). |
+| ⚡ **Async Loading** | Menggunakan `SwingWorker` agar aplikasi tidak *freeze* saat memuat data besar. |
+| 🔐 **Secure Login** | Sistem autentikasi dan registrasi pengguna baru. |
+| 📝 **CRUD Lengkap** | Tambah, Edit, Hapus, dan Lihat data barang dengan validasi. |
+| 🔍 **Smart Search** | Pencarian data barang secara *real-time* (Live Search). |
+| 📊 **Dashboard** | Statistik total item dan valuasi aset otomatis. |
+| 📥 **Export Data** | Fitur ekspor laporan stok ke format `.csv`. |
 
 ---
 
-## Cara Instalasi & Menjalankan
+## 🛠️ Teknologi yang Digunakan
 
-### Langkah 1: Persiapan Database
-1.  Buka **SSMS (SQL Server Management Studio)**.
-2.  Buka file `database.sql` yang ada di dalam repository ini.
-3.  Jalankan (Execute) script tersebut. Database `db_inventaris` dan tabelnya akan otomatis dibuat beserta data contohnya.
-4.  Pastikan **TCP/IP Port 1433** sudah diaktifkan di *SQL Server Configuration Manager*.
+* **Bahasa Pemrograman:** Java (JDK 11+)
+* **GUI Framework:** Java Swing (CardLayout, GridBagLayout)
+* **Database:** Microsoft SQL Server (Azure / Localhost)
+* **Driver:** MSSQL JDBC Driver
+* **Konsep OOP:** Inheritance, Encapsulation, Polymorphism, Abstraction
+* **Threading:** SwingWorker (Background Process)
 
-### Langkah 2: Konfigurasi Koneksi
-1.  Download file `db.properties` dari repository ini.
-2.  Buka file tersebut dengan Notepad.
-3.  Sesuaikan `db.user` dan `db.password` dengan login SQL Server di komputer Anda.
+---
 
-```properties
-db.url=jdbc:sqlserver://localhost:1433;databaseName=db_inventaris;encrypt=true;trustServerCertificate=true;
-db.user=sa
-db.password=PasswordLaptopAnda
+## 📂 Struktur Proyek
+
+```text
+Aplikasi-Inventaris/
+├── src/
+│   └── ManajemenInventaris/
+│       ├── MainApp.java           # Controller Utama (JFrame)
+│       ├── LoginPanel.java        # Interface Login & Register
+│       ├── LoadingPanel.java      # Animasi Loading (Thread)
+│       ├── ManajemenInventarisGUI.java # Dashboard & CRUD Logic
+│       └── KoneksiDatabase.java   # Utility Koneksi JDBC
+├── lib/
+│   └── mssql-jdbc-12.8.1.jre11.jar # Driver Database
+├── image/
+│   └── logo.png                   # Aset Gambar
+├── db.properties                  # Konfigurasi Database (PENTING)
+├── database.sql                   # Script Query SQL
+└── README.md                      # Dokumentasi Proyek

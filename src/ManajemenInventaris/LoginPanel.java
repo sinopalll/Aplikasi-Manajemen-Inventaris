@@ -5,145 +5,144 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.sql.*;
 
+/**
+ * Panel antarmuka untuk Autentikasi (Login) dan Registrasi pengguna baru.
+ * Bertugas memvalidasi kredensial input terhadap data di tabel 'users'.
+ */
 public class LoginPanel extends JPanel {
 
+    /** Referensi ke controller utama untuk navigasi */
     private MainApp mainApp;
-    private JTextField fieldUser;
-    private JPasswordField fieldPass;
-    private JButton btnLogin, btnRegister;
-
-    /** Dark Mode Colors */
-    private static final Color BG_BASE = Color.decode("#121212");
-    private static final Color BG_PANEL = Color.decode("#1E1E1E");
-    private static final Color ACCENT_COLOR = Color.decode("#3D5AFE");
-    private static final Color TEXT_WHITE = Color.WHITE;
+    
+    /** Field input untuk username */
+    private JTextField userField;
+    
+    /** Field input untuk password (tersembunyi) */
+    private JPasswordField passField;
 
     /**
-     * Creates a LoginPanel with the given MainApp reference.
-     * @param app Reference to the main application
+     * Konstruktor LoginPanel.
+     * @param app Referensi ke MainApp.
      */
     public LoginPanel(MainApp app) {
         this.mainApp = app;
         setLayout(new GridBagLayout());
-        setBackground(BG_BASE);
+        setBackground(Color.decode("#121212"));
+        
+        KoneksiDatabase.buatTabelJikaBelumAda();
         initComponents();
     }
 
     /**
-     * Initialize UI components for the login panel.
+     * Inisialisasi komponen UI Login.
      */
     private void initComponents() {
-        JPanel cardPanel = new JPanel(new GridLayout(6, 1, 10, 10));
-        cardPanel.setBackground(BG_PANEL);
-        cardPanel.setBorder(new EmptyBorder(40, 40, 40, 40));
-        // Judul
-        JLabel title = new JLabel("INVENTORY PRO", SwingConstants.CENTER);
+        JPanel card = new JPanel(new GridBagLayout());
+        card.setBackground(Color.decode("#1E1E1E"));
+        card.setBorder(new EmptyBorder(30, 40, 30, 40));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0; gbc.gridy = 0;
+
+        JLabel title = new JLabel("LOGIN SISTEM", SwingConstants.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        title.setForeground(ACCENT_COLOR);
-        cardPanel.add(title);
+        title.setForeground(Color.WHITE);
+        gbc.gridwidth = 2;
+        card.add(title, gbc);
 
-        /** Input Username */
-        JLabel lblUser = new JLabel("Username");
-        lblUser.setForeground(TEXT_WHITE);
-        fieldUser = new JTextField();
-        styleField(fieldUser);
-        cardPanel.add(lblUser);
-        cardPanel.add(fieldUser);
+        gbc.gridwidth = 1; gbc.gridy++;
+        JLabel lblUser = new JLabel("Username:");
+        lblUser.setForeground(Color.WHITE);
+        card.add(lblUser, gbc);
 
-        /** Input Password */
-        JLabel lblPass = new JLabel("Password");
-        lblPass.setForeground(TEXT_WHITE);
-        fieldPass = new JPasswordField();
-        styleField(fieldPass);
-        cardPanel.add(lblPass);
-        cardPanel.add(fieldPass);
-        
-        // Setup Enter key navigation
-        fieldUser.addActionListener(e -> fieldPass.requestFocus());
-        fieldPass.addActionListener(e -> aksiLogin());
+        gbc.gridx = 1;
+        userField = new JTextField(15);
+        card.add(userField, gbc);
 
-        /** Button Panel */
-        JPanel btnPanel = new JPanel(new GridLayout(1, 2, 10, 0));
-        btnPanel.setBackground(BG_PANEL);
+        gbc.gridx = 0; gbc.gridy++;
+        JLabel lblPass = new JLabel("Password:");
+        lblPass.setForeground(Color.WHITE);
+        card.add(lblPass, gbc);
 
-        btnRegister = new JButton("Daftar");
-        styleButton(btnRegister, Color.decode("#424242"));
-        btnRegister.addActionListener(e -> aksiDaftar());
+        gbc.gridx = 1;
+        passField = new JPasswordField(15);
+        card.add(passField, gbc);
 
-        btnLogin = new JButton("Masuk");
-        styleButton(btnLogin, ACCENT_COLOR);
-        btnLogin.addActionListener(e -> aksiLogin());
+        gbc.gridx = 0; gbc.gridy++; gbc.gridwidth = 2;
+        JButton btnLogin = new JButton("Masuk");
+        btnLogin.setBackground(Color.decode("#3D5AFE"));
+        btnLogin.setForeground(Color.WHITE);
+        btnLogin.addActionListener(e -> handleLogin());
+        card.add(btnLogin, gbc);
 
-        btnPanel.add(btnRegister);
-        btnPanel.add(btnLogin);
-        cardPanel.add(btnPanel);
+        gbc.gridy++;
+        JButton btnRegister = new JButton("Daftar Akun Baru");
+        btnRegister.setBackground(Color.decode("#2C2C2C"));
+        btnRegister.setForeground(Color.WHITE);
+        btnRegister.addActionListener(e -> handleRegister());
+        card.add(btnRegister, gbc);
 
-        add(cardPanel);
+        add(card);
     }
 
     /**
-     * Apply styling to a JTextField.
-     * @param field the field to style
+     * Menangani logika login saat tombol ditekan.
      */
-    private void styleField(JTextField field) {
-        field.setPreferredSize(new Dimension(250, 35));
-        field.setBackground(Color.decode("#2C2C2C"));
-        field.setForeground(TEXT_WHITE);
-        field.setCaretColor(TEXT_WHITE);
-        field.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-    }
+    private void handleLogin() {
+        String user = userField.getText();
+        String pass = new String(passField.getPassword());
 
-    /**
-     * Apply styling to a JButton.
-     * @param btn the button to style
-     * @param bg the background color
-     */
-    private void styleButton(JButton btn, Color bg) {
-        btn.setBackground(bg);
-        btn.setForeground(TEXT_WHITE);
-        btn.setFocusPainted(false);
-        btn.setBorderPainted(false);
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-    }
-
-    /**
-     * Handle login action by validating credentials against the database.
-     */
-    private void aksiLogin() {
-        String user = fieldUser.getText();
-        String pass = new String(fieldPass.getPassword());
+        if (user.isEmpty() || pass.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Username/Password tidak boleh kosong!");
+            return;
+        }
 
         try (Connection conn = KoneksiDatabase.getKoneksi();
-             PreparedStatement pst = conn.prepareStatement("SELECT * FROM users WHERE username=? AND password=?")) {
-            pst.setString(1, user);
-            pst.setString(2, pass);
-            if (pst.executeQuery().next()) {
-                /** LOGIN SUKSES -> Panggil MainApp untuk ganti halaman */
-                fieldUser.setText(""); fieldPass.setText("");
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE username=? AND password=?")) {
+            
+            stmt.setString(1, user);
+            stmt.setString(2, pass);
+            
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
                 mainApp.showInventoryView(user);
             } else {
-                JOptionPane.showMessageDialog(this, "Username/Password Salah!", "Gagal", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Username atau Password salah!", "Login Gagal", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage());
+        }
     }
 
     /**
-     * Handle registration action by inserting new user into the database.
+     * Menangani logika registrasi user baru.
      */
-    private void aksiDaftar() {
-        String user = fieldUser.getText();
-        String pass = new String(fieldPass.getPassword());
-        if(user.isEmpty() || pass.isEmpty()) { 
-            JOptionPane.showMessageDialog(this, "Isi data lengkap!"); return; 
+    private void handleRegister() {
+        String user = userField.getText();
+        String pass = new String(passField.getPassword());
+
+        if (user.isEmpty() || pass.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Isi username & password dulu!");
+            return;
         }
+
         try (Connection conn = KoneksiDatabase.getKoneksi();
-             PreparedStatement pst = conn.prepareStatement("INSERT INTO users VALUES (?, ?)")) {
-            pst.setString(1, user);
-            pst.setString(2, pass);
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Berhasil Daftar! Silakan Login.");
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Username sudah dipakai!");
+             PreparedStatement stmt = conn.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?)")) {
+            
+            stmt.setString(1, user);
+            stmt.setString(2, pass);
+            stmt.executeUpdate();
+            
+            JOptionPane.showMessageDialog(this, "Registrasi Berhasil! Silakan Login.");
+        } catch (SQLException ex) {
+            if (ex.getMessage().contains("PRIMARY KEY")) {
+                JOptionPane.showMessageDialog(this, "Username sudah dipakai!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+            }
         }
     }
 }
