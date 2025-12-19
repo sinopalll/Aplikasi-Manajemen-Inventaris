@@ -5,7 +5,7 @@
 ![Azure](https://img.shields.io/badge/Azure-0078D4?style=for-the-badge&logo=microsoft-azure&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
 
-> **Proyek Tugas Akhir Mandiri Praktikum Pemrograman Berorientasi Objek (PPBO)**
+> **Proyek Responsi Praktikum Pemrograman Berorientasi Objek (PPBO)**
 
 Aplikasi desktop berbasis **Java Swing** untuk pengelolaan stok barang dengan sistem **Multi-User** yang terintegrasi dengan **Microsoft SQL Server (Azure Cloud)**. Aplikasi ini dirancang dengan arsitektur *Single Window*, menerapkan konsep **Asynchronous Loading** untuk performa tinggi, dan antarmuka *Dark Mode* yang modern.
 
@@ -40,18 +40,22 @@ Aplikasi desktop berbasis **Java Swing** untuk pengelolaan stok barang dengan si
 ## 📂 Struktur Proyek
 
 ```text
-Aplikasi-Inventaris/
-├── src/
+Aplikasi_Manajemen_Inventaris/
+├── ManajemenInventarisAplikasi/                      # [FOLDER DISTRIBUSI] -> Jalankan program dari sini
+│   ├── AplikasiInventaris.jar     # File Executable Utama
+│   ├── db.properties              # Konfigurasi Database (Wajib ada di sini)
+│   ├── image/                     # Aset Gambar (Logo)
+│   └── lib/                       # Library Pendukung (Driver SQL)
+│
+├── src/                           # [SOURCE CODE]
 │   └── ManajemenInventaris/
-│       ├── MainApp.java           # Controller Utama (JFrame)
-│       ├── LoginPanel.java        # Interface Login & Register
-│       ├── LoadingPanel.java      # Animasi Loading (Thread)
-│       ├── ManajemenInventarisGUI.java # Dashboard & CRUD Logic
-│       └── KoneksiDatabase.java   # Utility Koneksi JDBC
-├── lib/
-│   └── mssql-jdbc-12.8.1.jre11.jar # Driver Database
-├── image/
-│   └── logo.png                   # Aset Gambar
-├── db.properties                  # Konfigurasi Database (PENTING)
-├── database.sql                   # Script Query SQL
+│       ├── MainApp.java           # Controller Utama
+│       ├── LoginPanel.java        # Interface Login
+│       ├── LoadingPanel.java      # Animasi Loading
+│       ├── ManajemenInventarisGUI.java # Dashboard & Logic
+│       └── KoneksiDatabase.java   # Utility JDBC
+│
+├── lib/                           # Library Development
+├── image/                         # Aset Gambar (Logo)
+├── database.sql                   # Script Query Database
 └── README.md                      # Dokumentasi Proyek
