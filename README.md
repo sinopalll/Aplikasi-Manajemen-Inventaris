@@ -41,21 +41,21 @@ Aplikasi desktop berbasis **Java Swing** untuk pengelolaan stok barang dengan si
 
 ```text
 Aplikasi_Manajemen_Inventaris/
-├── ManajemenInventarisAplikasi/   # [FOLDER DISTRIBUSI] -> Jalankan program dari sini
-│   ├── AplikasiInventaris.jar     # File Executable Utama
-│   ├── db.properties              # Konfigurasi Database (Wajib ada di sini)
-│   ├── image/                     # Aset Gambar (Logo)
-│   └── lib/                       # Library Pendukung (Driver SQL)
+├── ManajemenInventarisAplikasi/        # [FOLDER DISTRIBUSI] -> Jalankan program dari sini
+│   ├── AplikasiInventaris.jar          # File Executable Utama
+│   ├── db.properties                   # Konfigurasi Database (Wajib ada di sini)
+│   ├── image/                          # Aset Gambar (Logo)
+│   └── lib/                            # Library Pendukung (Driver SQL)
 │
-├── src/                           # [SOURCE CODE]
+├── src/                                # [SOURCE CODE]
 │   └── ManajemenInventaris/
-│       ├── MainApp.java           # Controller Utama
-│       ├── LoginPanel.java        # Interface Login
-│       ├── LoadingPanel.java      # Animasi Loading
+│       ├── MainApp.java                # Controller Utama
+│       ├── LoginPanel.java             # Interface Login
+│       ├── LoadingPanel.java           # Animasi Loading
 │       ├── ManajemenInventarisGUI.java # Dashboard & Logic
-│       └── KoneksiDatabase.java   # Utility JDBC
+│       └── KoneksiDatabase.java        # Utility JDBC
 │
-├── lib/                           # Library Development
-├── image/                         # Aset Gambar (Logo)
-├── database.sql                   # Script Query Database
-└── README.md                      # Dokumentasi Proyek
+├── lib/                                # Library Development
+├── image/                              # Aset Gambar (Logo)
+├── database.sql                        # Script Query Database
+└── README.md                           # Dokumentasi Proyek
